@@ -88,48 +88,5 @@ ALTER TABLE [dbo].[Employee]
 
 
 
----------------------------------------------------------
-INSERT INTO	[dbo].[Employee] VALUES (1, 'NatIDNumber', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 20, 22, '2015-10-11 15:50:35')
 
---------------------------------------------------------
 
-INSERT INTO	[dbo].[Employee] VALUES (1, 'NatIDNumber', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 20, 22, '2015-10-11 15:50:35')
-
-INSERT INTO	[dbo].[Employee] VALUES (1, 'UniqueNatIDNumber', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 20, 22, '2015-10-11 15:50:35')
-
------------------------------------------
-
-INSERT INTO	[dbo].[Employee] VALUES (1, 'VacationHoursZero', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 0, 22, '2015-10-11 15:50:35')
-
-INSERT INTO	[dbo].[Employee] VALUES (1, 'VacationHoursGreaterZero', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 1, 22, '2015-10-11 15:50:35')
-
------------------------------------------------
-
-INSERT INTO	[dbo].[Employee] ([BusinessEntityID], 
-							  [NationalIDNumber], 
-							  [LoginID], 
-							  [JobTitle], 
-							  [BirthDate], 
-							  [MaritalStatus], 
-							  [Gender], 
-							  [HireDate], 
-							  [SickLeaveHours], 
-							  [ModifiedDate]) 
-	VALUES (1, 'VacHoursEmpty', 'LoginID', 'JobTitle', '1990-12-21', '1', '1', '2012-12-21', 22, '2015-10-11 15:50:35')
-----------------------------------------------------------
-
-----------------------------------------------------------
-DROP TABLE [dbo].[Employee];
-
-SELECT TOP 1000 [BusinessEntityID]
-      ,[NationalIDNumber]
-      ,[LoginID]
-      ,[JobTitle]
-      ,[BirthDate]
-      ,[MaritalStatus]
-      ,[Gender]
-      ,[HireDate]
-      ,[VacationHours]
-      ,[SickLeaveHours]
-      ,[ModifiedDate]
-  FROM [AdventureWorks2012].[dbo].[Employee]
