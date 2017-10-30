@@ -10,11 +10,18 @@ ALTER TABLE [dbo].[Employee]
  ее данными из dbo.Employee. Поле VacationHours заполните из таблицы 
  HumanResources.Employee. Поле EmpNum заполните последовательными номерами строк 
  (примените оконные функции или создайте SEQUENCE);*/
- DECLARE @t1 TABLE ([BusinessEntityID] INT, [NationalIDNumber] NVARCHAR(15),
-					[LoginID] NVARCHAR(256), [JobTitle] NVARCHAR(50),
-					[BirthDate] DATE, [MaritalStatus] NCHAR(1),
-					[Gender] NCHAR(1), [HireDate] DATE, [VacationHours] SMALLINT,
-					[SickLeaveHours] SMALLINT, [ModifiedDate] DATE, [EmpNum] INT)  
+ DECLARE @t1 TABLE ([BusinessEntityID] INT, 
+					[NationalIDNumber] NVARCHAR(15),
+					[LoginID] NVARCHAR(256), 
+					[JobTitle] NVARCHAR(50),
+					[BirthDate] DATE, 
+					[MaritalStatus] NCHAR(1),
+					[Gender] NCHAR(1), 
+					[HireDate] DATE, 
+					[VacationHours] SMALLINT,
+					[SickLeaveHours] SMALLINT, 
+					[ModifiedDate] DATE, 
+					[EmpNum] INT)  
 
 INSERT INTO @t1 ([BusinessEntityID], 
 				 [NationalIDNumber],
