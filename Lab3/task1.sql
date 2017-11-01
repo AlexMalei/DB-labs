@@ -82,6 +82,9 @@ ALTER TABLE [dbo].[Employee]
 	DROP COLUMN [EmpNum];
 ALTER TABLE [dbo].[Employee] 
 	DROP CONSTRAINT [Unique], [GreaterZero]
+ALTER TABLE [dbo].[Employee] 
+	DROP CONSTRAINT [DefaultVacationHours]
+
 
 SELECT *
 FROM AdventureWorks2012.INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE

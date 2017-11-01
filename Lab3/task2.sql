@@ -12,6 +12,10 @@ ALTER TABLE [dbo].[Employee]
 	ADD [SumTotal] MONEY, 
 		[SumTaxAmt] MONEY,
 		[WithoutTax] AS ([SumTotal] - [SumTaxAmt])
+		
+ALTER TABLE [dbo].[Employee]
+	DROP COLUMN [WithoutTax], [SumTotal], 
+		[SumTaxAmt] ;
 
 /*-------------------------------------------------------------------------------------------*/
 /*b) Создайте временную таблицу #Employee, с первичным ключом по полю BusinessEntityID. 
@@ -36,39 +40,29 @@ CREATE TABLE #Employee (
 			[SumTaxAmt] MONEY 
 );
 
-/*SELECT * INTO [#Employee] 
-FROM (SELECT [BusinessEntityID], 
-			 [NationalIDNumber],
-			 [LoginID],
-			 [JobTitle],
-			 [BirthDate],
-			 [MaritalStatus],
-			 [Gender],
-			 [HireDate],
-			 [VacationHours],
-			 [SickLeaveHours],
-			 [ModifiedDate],
-			 [SumTotal],
-			 [SumTaxAmt] 
-	  FROM [dbo].[Employee]) 
-AS x; */
-
-
-
 /*-------------------------------------------------------------------------------------------*/
 /*c) заполните временную таблицу данными из dbo.Employee. 
      Посчитайте сумму продаж (TotalDue) и сумму налогов (TaxAmt) для каждого сотрудника (EmployeeID) 
 	 в таблице Purchasing.PurchaseOrderHeader и заполните этими значениями поля SumTotal и SumTaxAmt. 
 	 Выберите только те записи, где SumTotal > 5 000 000. Подсчет суммы продаж 
 	 и суммы налогов осуществите в Common Table Expression (CTE).*/
+
 SET IDENTITY_INSERT #Employee ON;
-WITH [prepared_data] ([EmployeeID], [TotalSum], [TotalTax])
+/*WITH [prepared_data] ([EmployeeID], [TotalSum], [TotalTax])
 	AS ( SELECT DISTINCT  [PPOrderHeader].[EmployeeID],
-				 SUM([PPOrderHeader].[TotalDue]) OVER (PARTITION BY [PPOrderHeader].[EmployeeID]),
-				 SUM([PPOrderHeader].[TaxAmt]) OVER (PARTITION BY [PPOrderHeader].[EmployeeID])
+						  SUM([PPOrderHeader].[TotalDue]) OVER (PARTITION BY [PPOrderHeader].[EmployeeID]),
+				          SUM([PPOrderHeader].[TaxAmt]) OVER (PARTITION BY [PPOrderHeader].[EmployeeID])
 		 FROM [Purchasing].[PurchaseOrderHeader] AS [PPOrderHeader] 
 			JOIN [dbo].[Employee] AS [dboEmployee] 
-			  ON [dboEmployee].[BusinessEntityID] = [PPOrderHeader].[EmployeeID] )
+			  ON [dboEmployee].[BusinessEntityID] = [PPOrderHeader].[EmployeeID] )*/
+WITH [prepared_data] ([EmployeeID], [TotalSum], [TotalTax])
+	AS ( SELECT DISTINCT  [PPOrderHeader].[EmployeeID],
+						  SUM([PPOrderHeader].[TotalDue]) ,
+				          SUM([PPOrderHeader].[TaxAmt])
+		 FROM [Purchasing].[PurchaseOrderHeader] AS [PPOrderHeader] 
+			JOIN [dbo].[Employee] AS [dboEmployee] 
+			  ON [dboEmployee].[BusinessEntityID] = [PPOrderHeader].[EmployeeID] 
+		GROUP BY [PPOrderHeader].[EmployeeID])
 
 INSERT INTO #Employee ( [BusinessEntityID],
 						[NationalIDNumber],
@@ -99,9 +93,12 @@ SELECT	[prepared_data].[EmployeeID],
 FROM [dbo].[Employee] AS [dboEmployee]
 JOIN [prepared_data] 
   ON [prepared_data].[EmployeeID] = [dboEmployee].[BusinessEntityID]
-WHERE [prepared_data].[TotalSum] > 5000000
+WHERE [prepared_data].[TotalSum] > 5000000;
 
-SELECT * FROM #Employee
+SET IDENTITY_INSERT #Employee OFF;
+
+SELECT * FROM #Employee;
+DELETE FROM #Employee;
 
 /*-------------------------------------------------------------------------------------------*/
 /*d) удалите из таблицы dbo.Employee строки, где MaritalStatus = ‘S’*/
@@ -121,7 +118,7 @@ MERGE [dbo].[Employee] AS [T]
 USING [#Employee] AS [S]
 ON [T].[BusinessEntityID] = [S].[BusinessEntityID]
 WHEN NOT MATCHED BY SOURCE THEN
-	DELETE --FROM [T]
+	DELETE
 WHEN MATCHED THEN
 	UPDATE SET
 		[T].[SumTotal] = [S].[SumTotal],
